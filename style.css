@@ -1,0 +1,181 @@
+/* Jeopardy Game Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #000;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.jeopardy-board {
+    background-color: #0066cc;
+    border-radius: 10px;
+    padding: 40px;
+    margin-bottom: 20px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: border 0.3s ease;
+}
+
+.jeopardy-board.white-border {
+    border: 8px solid #fff;
+}
+
+.jeopardy-board.red-flash {
+    background-color: #cc0000;
+    animation: flash-red 0.3s ease;
+}
+
+@keyframes flash-red {
+    0% { background-color: #0066cc; }
+    50% { background-color: #cc0000; }
+    100% { background-color: #0066cc; }
+}
+
+.category-value {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.category {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ffeb99; /* cream/yellow color */
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.value {
+    font-size: 4em;
+    font-weight: bold;
+    color: #ffeb99; /* cream/yellow color */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.clue-display, .answer-display {
+    display: none;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.clue-display.active, .answer-display.active {
+    display: block;
+}
+
+.clue-text, .answer-text {
+    font-size: 2.2em;
+    line-height: 1.4;
+    color: #fff;
+    font-weight: normal;
+    padding: 20px;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.answer-text {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ffeb99;
+}
+
+.controls {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.controls button {
+    background-color: #0066cc;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
+}
+
+.controls button:hover:not(:disabled) {
+    background-color: #0052a3;
+}
+
+.controls button:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.instructions {
+    margin-top: 20px;
+    font-size: 1.1em;
+    color: #ccc;
+}
+
+.instructions p {
+    margin: 5px 0;
+}
+
+.game-state {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    font-family: monospace;
+}
+
+.game-state div {
+    margin: 5px 0;
+}
+
+.game-state span {
+    color: #ffeb99;
+    font-weight: bold;
+}
+
+/* Hidden states */
+.category-value.hidden,
+.clue-display.hidden,
+.answer-display.hidden {
+    display: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .category {
+        font-size: 2em;
+    }
+    
+    .value {
+        font-size: 3em;
+    }
+    
+    .clue-text, .answer-text {
+        font-size: 1.8em;
+    }
+    
+    .jeopardy-board {
+        padding: 20px;
+        min-height: 300px;
+    }
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Jeopardy Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="jeopardy-board" id="jeopardyBoard">
+            <div class="category-value" id="categoryValue">
+                <div class="category" id="category">CATEGORY</div>
+                <div class="value" id="clueValue">$100</div>
+            </div>
+            <div class="clue-display" id="clueDisplay">
+                <div class="clue-text" id="clueText">This is where the clue will appear</div>
+            </div>
+            <div class="answer-display" id="answerDisplay">
+                <div class="answer-text" id="answerText">What is the answer?</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="startButton">Start Game</button>
+            <button id="nextButton" disabled>Next Question</button>
+            <div class="instructions">
+                <p>Press SPACEBAR to buzz in after the white border appears</p>
+                <p>Buzzing too early will flash red and block you for 0.25 seconds</p>
+            </div>
+        </div>
+        
+        <div class="game-state" id="gameState">
+            <div>State: <span id="currentState">Ready</span></div>
+            <div>Questions Loaded: <span id="questionCount">0</span></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
