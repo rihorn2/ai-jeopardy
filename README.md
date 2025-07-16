@@ -6,11 +6,33 @@ A web-based Jeopardy game interface that uses the classic Jeopardy dataset with 
 
 - **Authentic Jeopardy Experience**: Displays categories, clue values, and questions in the classic Jeopardy format
 - **Visual Design**: Blue background with cream/yellow text matching the iconic Jeopardy look
-- **Text-to-Speech**: Clues are read aloud using the browser's Speech Synthesis API
+- **Azure Speech Service Integration**: High-quality text-to-speech using Microsoft Azure Speech Service
+- **Browser TTS Fallback**: Automatic fallback to browser's Speech Synthesis API if Azure is not configured
 - **Interactive Buzzing**: Press spacebar to buzz in after the white border appears
 - **Anti-Cheat Protection**: Early buzzing results in a red flash and 0.25-second penalty
 - **Large Dataset**: Over 500,000 questions from 40 seasons of Jeopardy
 - **Responsive Design**: Works on desktop and mobile devices
+
+## Azure Speech Service Setup
+
+### Prerequisites
+
+1. Create an Azure Speech Service resource in the [Azure Portal](https://portal.azure.com)
+2. Note your endpoint URL (e.g., `https://eastus.tts.speech.microsoft.com/`)
+3. Copy your subscription key from the Azure Portal
+
+### Configuration
+
+1. **In the Game**: Click the "Azure Config" button to open the configuration modal
+2. **Test Page**: Use `azure-speech-test.html` to test your Azure credentials before playing
+
+**Configuration Fields:**
+- **Endpoint URL**: Your Azure Speech Service endpoint (e.g., `https://eastus.tts.speech.microsoft.com/`)
+- **Subscription Key**: Your Azure Speech Service subscription key
+- **Region**: The Azure region where your service is deployed (e.g., `eastus`)
+- **Voice**: Choose from available neural voices (Jenny, Guy, Aria, Davis)
+
+The configuration is saved in your browser's local storage for future sessions.
 
 ## How to Play
 
@@ -47,14 +69,18 @@ Simply open `index.html` in your web browser. Note that some browsers may block 
 
 - `index.html` - Main HTML structure
 - `style.css` - CSS styling for the Jeopardy theme
-- `script.js` - JavaScript game logic and interactivity
+- `script.js` - JavaScript game logic and Azure Speech Service integration
+- `azure-speech-test.html` - Standalone page to test Azure Speech Service configuration
 - `combined_season1-40.tsv` - Jeopardy questions dataset
 - `test-results.md` - Test documentation
 
 ## Technical Details
 
+- **Text-to-Speech**: Primary support for Azure Speech Service with browser TTS fallback
+- **Audio Format**: Azure returns MP3 audio streams for high-quality speech
+- **Voice Options**: Multiple neural voices available (Jenny, Guy, Aria, Davis)
 - **Dataset Format**: Tab-separated values with columns for round, clue_value, category, answer (clue), question (answer), and more
-- **Browser APIs Used**: Speech Synthesis API, Fetch API, DOM Events
+- **Browser APIs Used**: Fetch API, Audio API, DOM Events, Local Storage
 - **Responsive**: CSS Grid and Flexbox for responsive layout
 - **Accessibility**: Keyboard navigation and screen reader friendly
 

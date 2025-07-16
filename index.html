@@ -24,15 +24,48 @@
         <div class="controls">
             <button id="startButton">Start Game</button>
             <button id="nextButton" disabled>Next Question</button>
+            <button id="configButton">Azure Config</button>
             <div class="instructions">
                 <p>Press SPACEBAR to buzz in after the white border appears</p>
                 <p>Buzzing too early will flash red and block you for 0.25 seconds</p>
             </div>
         </div>
         
+        <!-- Azure Configuration Modal -->
+        <div class="modal" id="configModal">
+            <div class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <h2>Azure Speech Service Configuration</h2>
+                <div class="config-form">
+                    <label for="azureEndpoint">Endpoint URL:</label>
+                    <input type="text" id="azureEndpoint" placeholder="https://your-region.tts.speech.microsoft.com/">
+                    
+                    <label for="azureKey">Subscription Key:</label>
+                    <input type="password" id="azureKey" placeholder="Your Azure subscription key">
+                    
+                    <label for="azureRegion">Region:</label>
+                    <input type="text" id="azureRegion" placeholder="eastus" value="eastus">
+                    
+                    <label for="azureVoice">Voice:</label>
+                    <select id="azureVoice">
+                        <option value="en-US-JennyNeural">Jenny (Female, US)</option>
+                        <option value="en-US-GuyNeural">Guy (Male, US)</option>
+                        <option value="en-US-AriaNeural">Aria (Female, US)</option>
+                        <option value="en-US-DavisNeural">Davis (Male, US)</option>
+                    </select>
+                    
+                    <div class="button-group">
+                        <button id="saveConfig">Save Configuration</button>
+                        <button id="clearConfig">Clear Configuration</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="game-state" id="gameState">
             <div>State: <span id="currentState">Ready</span></div>
             <div>Questions Loaded: <span id="questionCount">0</span></div>
+            <div>TTS Service: <span id="ttsService">Browser TTS</span></div>
         </div>
     </div>
 
