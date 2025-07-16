@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Speech Service Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #0066cc;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0052a3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #0066cc;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background-color: #d4edda;
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Azure Speech Service Test</h1>
+        <p>This page allows you to test Azure Speech Service integration before using it in the Jeopardy game.</p>
+        
+        <div class="form-group">
+            <label for="endpoint">Azure Speech Service Endpoint:</label>
+            <input type="text" id="endpoint" placeholder="https://your-region.tts.speech.microsoft.com/">
+        </div>
+        
+        <div class="form-group">
+            <label for="subscriptionKey">Subscription Key:</label>
+            <input type="password" id="subscriptionKey" placeholder="Your Azure subscription key">
+        </div>
+        
+        <div class="form-group">
+            <label for="region">Region:</label>
+            <input type="text" id="region" value="eastus" placeholder="eastus">
+        </div>
+        
+        <div class="form-group">
+            <label for="voice">Voice:</label>
+            <select id="voice">
+                <option value="en-US-JennyNeural">Jenny (Female, US)</option>
+                <option value="en-US-GuyNeural">Guy (Male, US)</option>
+                <option value="en-US-AriaNeural">Aria (Female, US)</option>
+                <option value="en-US-DavisNeural">Davis (Male, US)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="text">Text to Speak:</label>
+            <textarea id="text" rows="3" placeholder="Enter text to convert to speech...">This is a test of the Azure Speech Service integration for the AI Jeopardy game.</textarea>
+        </div>
+        
+        <button onclick="testAzureSpeech()">Test Azure Speech</button>
+        <button onclick="saveCredentials()">Save Credentials</button>
+        <button onclick="loadCredentials()">Load Saved Credentials</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function loadCredentials() {
+            document.getElementById('endpoint').value = localStorage.getItem('azure_endpoint') || '';
+            document.getElementById('subscriptionKey').value = localStorage.getItem('azure_key') || '';
+            document.getElementById('region').value = localStorage.getItem('azure_region') || 'eastus';
+            document.getElementById('voice').value = localStorage.getItem('azure_voice') || 'en-US-JennyNeural';
+        }
+        
+        function saveCredentials() {
+            localStorage.setItem('azure_endpoint', document.getElementById('endpoint').value);
+            localStorage.setItem('azure_key', document.getElementById('subscriptionKey').value);
+            localStorage.setItem('azure_region', document.getElementById('region').value);
+            localStorage.setItem('azure_voice', document.getElementById('voice').value);
+            showResult('Credentials saved successfully!', 'success');
+        }
+        
+        function generateSSML(text, voice) {
+            const escaped = text.replace(/[<>&'"]/g, function (c) {
+                switch (c) {
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '&': return '&amp;';
+                    case '\'': return '&apos;';
+                    case '"': return '&quot;';
+                }
+            });
+            
+            return `
+            <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
+                <voice name="${voice}">
+                    <prosody rate="0.9" pitch="medium">
+                        ${escaped}
+                    </prosody>
+                </voice>
+            </speak>`.trim();
+        }
+        
+        async function testAzureSpeech() {
+            const endpoint = document.getElementById('endpoint').value.trim();
+            const subscriptionKey = document.getElementById('subscriptionKey').value.trim();
+            const voice = document.getElementById('voice').value;
+            const text = document.getElementById('text').value.trim();
+            
+            if (!endpoint || !subscriptionKey || !text) {
+                showResult('Please fill in all required fields (endpoint, subscription key, and text).', 'error');
+                return;
+            }
+            
+            showResult('Testing Azure Speech Service...', '');
+            
+            try {
+                const ssml = generateSSML(text, voice);
+                const response = await fetch(`${endpoint}/cognitiveservices/v1`, {
+                    method: 'POST',
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': subscriptionKey,
+                        'Content-Type': 'application/ssml+xml',
+                        'X-Microsoft-OutputFormat': 'audio-16khz-128kbitrate-mono-mp3'
+                    },
+                    body: ssml
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Azure Speech Service error: ${response.status} ${response.statusText}`);
+                }
+                
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                showResult(`
+                    <strong>Success!</strong> Azure Speech Service is working correctly.<br>
+                    <audio controls>
+                        <source src="${audioUrl}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                `, 'success');
+                
+            } catch (error) {
+                showResult(`<strong>Error:</strong> ${error.message}<br><br>
+                    Please check your credentials and ensure:
+                    <ul>
+                        <li>The endpoint URL is correct (e.g., https://eastus.tts.speech.microsoft.com/)</li>
+                        <li>The subscription key is valid</li>
+                        <li>Your Azure Speech Service resource is active</li>
+                        <li>CORS is properly configured if running locally</li>
+                    </ul>`, 'error');
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = `result ${type}`;
+        }
+        
+        // Load saved credentials on page load
+        window.onload = loadCredentials;
+    </script>
+</body>
+</html>
